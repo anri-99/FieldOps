@@ -114,6 +114,9 @@ public class FieldOpsController {
                                 break;
                         }
                         break;
+                    case "5"://completa ticket
+                        interventionService.completaStato(idTicket);
+                        break;
                     case "4": //indietro
                         flagY = false;
                         break;

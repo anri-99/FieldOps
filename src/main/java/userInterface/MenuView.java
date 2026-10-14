@@ -5,8 +5,6 @@ import utilities.ScannerDati;
 
 public class MenuView {
 
-    ScannerDati scan = new ScannerDati();
-
     public static void menuPrincipale(){
         System.out.println("Menu: ");
         System.out.println(" 1) apri ticket ");
@@ -21,7 +19,8 @@ public class MenuView {
         System.out.println(" 1) cambia titolo ");
         System.out.println(" 2) cambia descrizione ");
         System.out.println(" 3) cambia stato ");
-        System.out.println(" 4) indietro ");
+        System.out.println(" 4) completa ticket ");
+        System.out.println(" 5) indietro ");
         System.out.println("----------------------");
     }
 
@@ -60,7 +59,7 @@ public class MenuView {
     }
 
     public static void stampaInterventoCercato(Intervento intervento){
-        intervento.toString();
+        System.out.println(intervento.toString());
         System.out.println("----------------------");
     }
 
