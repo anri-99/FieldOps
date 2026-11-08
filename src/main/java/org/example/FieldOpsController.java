@@ -5,6 +5,7 @@ import DTO.Stato;
 import repository.InterventionRepository;
 import service.InterventionService;
 import userInterface.MenuView;
+import utilities.RisultatoOperazione;
 import utilities.ScannerDati;
 
 public class FieldOpsController {
@@ -74,7 +75,8 @@ public class FieldOpsController {
             MenuView.messaggioRicercaTicket();
             idTicket = Integer.parseInt(scan.scanDati());
             try {
-                MenuView.stampaInterventoCercato(interventionService.trovaTicket(idTicket));
+                RisultatoOperazione result = interventionService.trovaTicket(idTicket);
+                MenuView.stampaInterventoCercato(result.getIntervento());
 
                 MenuView.menuTicket();
                 choice = scan.scanDati();
@@ -139,7 +141,8 @@ public class FieldOpsController {
             MenuView.messaggioRicercaById();
             id = Integer.parseInt(scan.scanDati());
             try {
-                MenuView.stampaInterventoCercato(interventionService.trovaTicket(id));
+                RisultatoOperazione result = interventionService.trovaTicket(id);
+                MenuView.stampaInterventoCercato(result.getIntervento());
                 MenuView.messaggioConfermaEliminazione();
                 choice = scan.scanDati();
                 if (choice.equalsIgnoreCase("Y")) {

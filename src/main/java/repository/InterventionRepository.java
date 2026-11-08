@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface InterventionRepository {
 
-    public void save(Intervento intervento);
+    public Intervento save(Intervento intervento);
 
     public Intervento findById(int id);
 

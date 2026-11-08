@@ -3,6 +3,8 @@ package service;
 import DTO.Intervento;
 import DTO.Stato;
 import repository.InterventionRepository;
+import utilities.EsitoOperazione;
+import utilities.RisultatoOperazione;
 
 import java.util.List;
 
@@ -24,8 +26,12 @@ public class InterventionService{
         notificationService.ritornaMessaggio(NotificationService.Esito.OK,"OK");
     }
 
-    public Intervento trovaTicket(int id) throws Exception{
-        return repository.findById(id);
+    public RisultatoOperazione trovaTicket(int id) {
+        Intervento intervento = repository.findById(id);
+        if(intervento == null){
+            return new RisultatoOperazione(EsitoOperazione.NOT_FOUND, "Intervento non trovato", null);
+        }
+        return new RisultatoOperazione(EsitoOperazione.TROVATO,"Intervento trovato", intervento);
     }
 
     public List<Intervento> listaTicket() throws Exception{
@@ -61,25 +67,40 @@ public class InterventionService{
         }
     }
 
-    public void modificaStato(int id, Stato stato) throws Exception{
+    public RisultatoOperazione modificaStato(int id, Stato stato) {
         Intervento intervento = repository.findById(id);
-        if(intervento != null){
 
-            EsitoTransizione esito = validaTransizione(intervento.getStato(), stato);
-            if(esito == EsitoTransizione.CONSENTITA) {
-                intervento.setStato(stato);
-                repository.save(intervento);
-                notificationService.ritornaMessaggio(NotificationService.Esito.OK, "OK");
-            }else if(esito == EsitoTransizione.STATO_GIA_RAGGIUNTO){
-                notificationService.ritornaMessaggio(NotificationService.Esito.OK,"OK");
-            }else{
-                //errore per impossibilità
-                notificationService.ritornaMessaggio(NotificationService.Esito.KO,"KO");
-            }
-        }else{
-            //errore
-            notificationService.ritornaMessaggio(NotificationService.Esito.NOT_FOUND,"NOT_FOUND");
+        if (intervento == null) {
+            return new RisultatoOperazione(
+                    EsitoOperazione.NOT_FOUND,
+                    "Intervento non trovato",
+                    null
+            );
         }
+        EsitoTransizione esito = validaTransizione(intervento.getStato(), stato);
+
+        if (esito == EsitoTransizione.STATO_GIA_RAGGIUNTO) {
+            return new RisultatoOperazione(
+                    EsitoOperazione.STATO_GIA_RAGGIUNTO,
+                    "Stato già raggiunto",
+                    intervento
+            );
+        }
+        if (esito == EsitoTransizione.NON_CONSENTITA) {
+            return new RisultatoOperazione(
+                    EsitoOperazione.TRANSIZIONE_NON_CONSENTITA,
+                    "Transizione non consentita",
+                    null
+            );
+        }
+        intervento.setStato(stato);
+        Intervento interventoSalvato = repository.save(intervento);
+
+        return new RisultatoOperazione(
+                EsitoOperazione.MODIFICATO,
+                "Intervento modificato",
+                interventoSalvato
+        );
     }
 
     public void completaStato(int id) throws Exception{

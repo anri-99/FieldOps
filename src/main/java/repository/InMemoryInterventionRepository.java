@@ -12,13 +12,18 @@ public class InMemoryInterventionRepository implements InterventionRepository {
     private Map<Integer, Intervento> mappa = new HashMap<>();
 
     @Override
-    public void save(Intervento intervento) {
+    public Intervento save(Intervento intervento) {
         mappa.put(intervento.getId(),intervento);
+        return intervento;
     }
 
     @Override
     public Intervento findById(int id) {
-        return mappa.get(id);
+        Intervento intervento = mappa.get(id);
+        if (intervento == null) {
+            return null;
+        }
+        return new Intervento(intervento.getId(),intervento.getTitolo(),intervento.getDescrizione(),intervento.getStato());
     }
 
     @Override
